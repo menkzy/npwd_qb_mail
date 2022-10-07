@@ -6,7 +6,6 @@ RegisterNetEvent("npwd:qb-mail:getMail", function()
 	local mailResults = MySQL.query.await('SELECT `citizenid`, `sender`, `subject`, `message`, `read`, `mailid`, `date`, `button` FROM player_mails WHERE citizenid = ? ORDER BY date DESC', {Player.PlayerData.citizenid})
 	
 	for i = 1, #mailResults do
-		mailResults[i].message = mailResults[i].message:gsub("<script>[^</script>^<script>]+</script>", "")
 		if mailResults[i].button ~= nil and #mailResults[i].button == 2 then -- qb-phone used replace button with "" when its used, so checking if thats the length then setting to nil for ui
 			mailResults[i].button = nil
 		end
@@ -61,7 +60,7 @@ RegisterNetEvent('qb-phone:server:sendNewMail', function(mailData)
 		mailid = mailid,
 		button = mailData.button,
 		read = 0,
-		date = os.time(os.date("!*t")) * 1000
+		date = os.time() * 1000
 	}
 	TriggerClientEvent('npwd:qb-mail:newMail', src, newMail)
 end)
@@ -83,7 +82,7 @@ RegisterNetEvent('qb-phone:server:sendNewMailToOffline', function(citizenid, mai
 			mailid = mailid,
 			button = mailData.button,
 			read = 0,
-			date = os.time(os.date("!*t"))
+			date = os.time() * 1000
 		}
 		TriggerClientEvent('npwd:qb-mail:newMail', src, newMail)
     else
